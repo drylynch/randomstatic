@@ -2,6 +2,7 @@
 spits out quick + dirty monochrome noise images, at given width & height
 
 originally made after seeing someone say they did it to make 5x7 text characters
+
 also fun to make small images and try expand them out in an image editor to make cool looking random-inspired dudes
 
 
