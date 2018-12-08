@@ -5,7 +5,7 @@ from PIL import Image
 import random
 
 
-SAVE_DIR = Path(__file__).resolve().parent / '# randoms #'
+SAVE_DIR = Path(__file__).resolve().parent / '# randoms #'  # new dir in script location called '# randoms #'
 EXTENSION = '.png'  # can make a lossy jpg if you're a maniac
 
 
@@ -35,7 +35,6 @@ def go(how_many, width, height):
     for n in range(1, how_many+1):
         img = bnw_image_from_bytes(random_binary_bytes(width*height), width, height)
         img.save(SAVE_DIR / (str(n) + EXTENSION))
-    print('donezo')
 
 
 if __name__ == '__main__':
