@@ -17,20 +17,20 @@ import sys
 
 SAVE_DIR = Path(__file__).resolve().parent / '# randoms #'
 EXTENSION = '.png'  # can make a lossy jpg if you're a maniac
-PADDING_SIZE = 20  # extra bits to generate, cause random.getrandbits sometimes doesn't generate enough, never more than 12-13 needed though
+PADDING_SIZE = 20  # extra bits to generate, never more than 12-13 needed though
 
 
 def random_binary_bytes(length):
     """ return bytes, only b'0x00' and b'0xff' """
-    out = bin(random.getrandbits(length + PADDING_SIZE))[:length]  # add extra padding, then cut down to desired size
+    out = bin(random.getrandbits(length + PADDING_SIZE))[2:]  # cut off '0b' binary marker at start
     out = bytes(out, encoding='utf8')
     trans = bytearray.maketrans(b'10', b'\xff\x00')  # translate 1 -> FF, 0 -> 00
     out = out.translate(trans)
     return out
 
 
-def generate(width, height):
-    """ return black & white Image of given width & height """
+def generate_img(width, height):
+    """ return black & white PIL Image of given width & height """
     return Image.frombytes('L', (width, height), random_binary_bytes(width * height))
 
 
@@ -38,7 +38,7 @@ def go(width, height, how_many):
     """ makes how_many random images """
     SAVE_DIR.mkdir(parents=True, exist_ok=True)  # quietly make save dir if it doesn't exist yet
     for n in range(1, how_many+1):
-        img = generate(width, height)
+        img = generate_img(width, height)
         img.save(SAVE_DIR / (str(n) + EXTENSION))
 
 
