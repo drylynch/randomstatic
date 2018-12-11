@@ -1,4 +1,13 @@
 # makes a bunch of pseudo random monochrome noise images, at given width/height
+# will take a while if you go over 100k imgs, and will kill your drive if you run on an ssd
+# so watch out ok buddy
+
+"""
+TODO
+
+find a way to generate random binary strings that are always a given length cause padding works but is dumb
+
+"""
 
 from pathlib import Path
 from PIL import Image
@@ -8,14 +17,12 @@ import sys
 
 SAVE_DIR = Path(__file__).resolve().parent / '# randoms #'
 EXTENSION = '.png'  # can make a lossy jpg if you're a maniac
+PADDING_SIZE = 20  # extra bits to generate, cause random.getrandbits sometimes doesn't generate enough, never more than 12-13 needed though
 
 
 def random_binary_bytes(length):
-    """ return length bytes, only 0x00 and 0xff """
-    out = ''
-    while len(out) < length:  # TODO make this less shitty
-        out = '{0:b}'.format(random.getrandbits(length))  # sometimes retrurns fewer bits than necessary???
-    out = out[:length]  # cut off to correct length
+    """ return bytes, only b'0x00' and b'0xff' """
+    out = bin(random.getrandbits(length + PADDING_SIZE))[:length]  # add extra padding, then cut down to desired size
     out = bytes(out, encoding='utf8')
     trans = bytearray.maketrans(b'10', b'\xff\x00')  # translate 1 -> FF, 0 -> 00
     out = out.translate(trans)
@@ -49,7 +56,13 @@ def main():
         except ValueError:
             print('ERROR: positive integer inputs only')
         else:
-            go(*args)
+            print('generating images, press CTRL + C to stop...')
+            try:
+                go(*args)
+            except KeyboardInterrupt:
+                print('## stopped.')
+            else:
+                print('done.')
 
 
 if __name__ == '__main__':
